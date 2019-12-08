@@ -11,8 +11,13 @@ function transcoding (filePath, outputPath) {
   spawnObj.stderr.on('data', (data) => {
     logger.error(data);
   });
-  spawnObj.on('exit', (data) => {
-    logger.debug(`Transcoding process exited with code ${data}`);
+
+  return new Promise((resolve, reject) => {
+    spawnObj.on('exit', (code) => {
+      logger.debug(`Transcoding process exited with code ${code}`);
+      if (code === 0) resolve();
+      else reject();
+    });
   });
 }
 
