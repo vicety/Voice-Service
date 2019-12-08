@@ -9,7 +9,9 @@ const DEFAULT_FILE_NAME = 'lastUpload.aac';
 const upload = multer({
   storage: multer.diskStorage({
     destination: 'uploads/',
-    filename: DEFAULT_FILE_NAME,
+    filename: (req, file, cb) => {
+      cb(null, DEFAULT_FILE_NAME);
+    },
   }),
 });
 const app = express();
