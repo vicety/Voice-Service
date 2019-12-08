@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const logger = require('./utils/logger');
 
-function transcodeing (filePath, outputPath) {
+function transcoding (filePath, outputPath) {
   logger.debug('=====FFMPEG TRANSCODING BEGINS=====');
   const spawnObj = spawn('ffmpeg', ['-i', filePath, outputPath]);
   spawnObj.stdout.on('data', (data) => {
@@ -17,6 +17,6 @@ function transcodeing (filePath, outputPath) {
   });
 }
 
-exports = transcodeing;
+module.exports = transcoding;
 
 // transcodeing('../uploads/234.aac', '../output/234.wav');
