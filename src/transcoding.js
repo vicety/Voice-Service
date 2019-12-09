@@ -1,9 +1,8 @@
 const { spawn } = require('child_process');
-const fs = require('fs');
 const logger = require('./utils/logger');
 
 function transcoding (filePath, outputPath) {
-  logger.debug('=====FFMPEG TRANSCODING BEGINS=====');
+  logger.debug('----- FFMPEG TRANSCODING BEGINS -----');
   const spawnObj = spawn('ffmpeg', ['-i', filePath, outputPath]);
   spawnObj.stdout.on('data', (data) => {
     logger.debug(data);

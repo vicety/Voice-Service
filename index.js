@@ -1,6 +1,8 @@
 const express = require('express');
 const multer = require('multer');
-const transcoding = require('./src/transcoding');
+const logger = require('./src/utils/logger');
+// const transcoding = require('./src/transcoding');
+const audioRec = require('./src/audioRec');
 const requestBeginLogger = require('./src/middleware/loggingBeginMiddleware');
 const responseSentLogger = require('./src/middleware/loggingEndMiddleware');
 
@@ -24,7 +26,13 @@ app.get('/', (request, response) => {
 });
 
 app.post('/upload', upload.any(), async (req, res, next) => {
-  await transcoding(`uploads/${DEFAULT_FILE_NAME}`, `output/${DEFAULT_FILE_NAME}`);
+  const srcFilePath = `uploads/${DEFAULT_FILE_NAME}`;
+  // const tgtFilePath = `output/${DEFAULT_FILE_NAME}`;
+  // await transcoding(srcFilePath, tgtFilePath);
+  logger.debug('----- 发送语音听写请求 -----');
+  const result = await audioRec(srcFilePath);
+  if (result) logger.debug(result);
+  else res.send('Error');
   res.send('upload recieved');
 });
 
