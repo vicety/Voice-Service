@@ -17,12 +17,10 @@ module.exports = async (filePath) => {
   };
   await axios(requestConfig).then((response) => {
     if (response.data.err_no === 0) {
-      console.log(response.data.result);
       return response.data.result[0];
     }
     logger.error(`Error Code: ${response.data.err_no}, Error Msg: ${response.data.err_msg}`);
   }).catch((error) => {
     logger.error(error.message);
   }).finally(() => null);
-  console.log('here');
 };
