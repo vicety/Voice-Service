@@ -23,5 +23,5 @@ module.exports = async (filePath) => {
     logger.error(`Error Code: ${response.data.err_no}, Error Msg: ${response.data.err_msg}`);
   }).catch((error) => {
     logger.error(error.message);
-  }).finally(() => null);
+  });
 };
