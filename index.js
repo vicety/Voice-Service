@@ -32,8 +32,8 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   logger.debug('----- 发送语音听写请求 -----');
   const result = await audioRec(srcFilePath);
   if (result) logger.debug(result);
-  else res.send('Error');
-  res.send('upload recieved');
+  else res.send('Error').end();
+  res.send('upload recieved').end();
 });
 
 app.listen(PORT, () => {
