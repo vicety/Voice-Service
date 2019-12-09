@@ -17,7 +17,8 @@ module.exports = async (filePath) => {
   };
   await axios(requestConfig).then((response) => {
     if (response.data.err_no === 0) {
-      return new Promise(response.data.result[0]);
+      logger.debug(`Got response ${response.data.result[0]} at audioRes.js`);
+      return Promise.resolve(response.data.result[0]);
     }
     logger.error(`Error Code: ${response.data.err_no}, Error Msg: ${response.data.err_msg}`);
   }).catch((error) => {
