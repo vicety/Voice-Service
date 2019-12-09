@@ -2,7 +2,7 @@ const axios = require('axios');
 const fs = require('fs');
 const logger = require('./utils/logger');
 
-module.exports = (filePath) => {
+module.exports = async (filePath) => {
   const data = fs.readFileSync(filePath);
   const requestConfig = {
     url: 'http://vop.baidu.com/pro_api',
@@ -15,13 +15,11 @@ module.exports = (filePath) => {
     },
     data,
   };
-  axios(requestConfig).then((response) => {
-    if (response.data.err_no === 0) {
-      logger.debug(`Got response ${response.data.result[0]} at audioRes.js`);
-      return Promise.resolve(response.data.result[0]);
-    }
-    logger.error(`Error Code: ${response.data.err_no}, Error Msg: ${response.data.err_msg}`);
-  }).catch((error) => {
-    logger.error(error.message);
-  });
+  const response = await axios(requestConfig);
+  if (response.data.err_no === 0) {
+    logger.debug(`Got response ${response.data.result[0]} at audioRes.js`);
+    return Promise.resolve(response.data.result[0]);
+  }
+  logger.error(`Error Code: ${response.data.err_no}, Error Msg: ${response.data.err_msg}`);
+  return Promise.resolve(null);
 };
