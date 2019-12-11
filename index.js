@@ -3,6 +3,7 @@ const multer = require('multer');
 const logger = require('./src/utils/logger');
 // const transcoding = require('./src/transcoding');
 const ClientManger = require('./src/clientConnection/clientManager')
+const StatusCode = require('./src/clientConnection/statusCode')
 const audioRec = require('./src/audioRec');
 const requestBeginLogger = require('./src/middleware/loggingBeginMiddleware');
 const responseSentLogger = require('./src/middleware/loggingEndMiddleware');
@@ -41,7 +42,7 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   const result = await audioRec(srcFilePath);
   logger.debug(`Got result: ${result}`);
   const clientStatus = clientManager.sendData(result)
-  if(clientStatus === ClientManger.SUCCESS) res.send('OK')
+  if(clientStatus === StatusCode.SUCCESS) res.send('OK')
   else res.send('failed')
 });
 

@@ -1,4 +1,5 @@
 const logger = require('../utils/logger');
+const StatusCode = require('./statusCode')
 
 class ClientManger {
     constructor(expressServer) {
@@ -25,13 +26,10 @@ class ClientManger {
     }
 
     sendData(data) {
-        if(!this.client) return CLIENT_OFFLINE
+        if(!this.client) return StatusCode.CLIENT_OFFLINE
         this.client.emit('video', data)
-        return SUCCESS
+        return StatusCode.SUCCESS
     }
 } 
-
-ClientManger.SUCCESS = 1
-ClientManger.CLIENT_OFFLINE = 2
 
 module.exports = ClientManger
