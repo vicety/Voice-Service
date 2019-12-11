@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const logger = require('./src/utils/logger');
 // const transcoding = require('./src/transcoding');
+const ClientManger = require('./src/clientConnection/clientManager')
 const audioRec = require('./src/audioRec');
 const requestBeginLogger = require('./src/middleware/loggingBeginMiddleware');
 const responseSentLogger = require('./src/middleware/loggingEndMiddleware');
@@ -18,7 +19,14 @@ const upload = multer({
 });
 const app = express();
 app.use(requestBeginLogger);
+// app.use(cors())
 app.use(responseSentLogger);
+
+const server = app.listen(PORT, () => {
+  console.log(`listening to port ${PORT}`);
+});
+
+const clientManager = new ClientManger(server);
 
 app.get('/', (request, response) => {
   console.log('get request');
@@ -32,11 +40,26 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   logger.debug('----- 发送语音听写请求 -----');
   const result = await audioRec(srcFilePath);
   logger.debug(`Got result: ${result}`);
-  if (result) {
-    res.send('upload recieved').end();
-  } else res.send('Error').end();
+  const clientStatus = clientManager.sendData(result)
+  if(clientStatus === ClientManger.SUCCESS) res.send('OK')
+  else res.send('failed')
 });
 
-app.listen(PORT, () => {
-  console.log(`listening to port ${PORT}`);
-});
+// websocket part
+// const io = require('socket.io')(30000);
+// const ioServer = require('http').Server(app)
+
+// const io = require('socket.io')(server)
+// io.on('connect', (socket) => {
+//   console.log('connected')
+//   socket.on('connection', () => console.log('socket connect'))
+//   socket.on('disconnect', (reason) => {
+//     console.log(`socket disconnect, reason: ${reason}`)
+//   })
+//   setInterval(() => {
+//     socket.emit('server_send', `server_send at: ${(new Date()).toUTCString()}`)
+//   }, 2000)
+//   socket.on('client_send', (data) => { logger.debug(`rcvd from client: ${data}`) })
+// })
+
+// TODO: 改成原来的io形式

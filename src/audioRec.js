@@ -11,13 +11,12 @@ module.exports = async (filePath) => {
     params: {
       dev_pid: 80001,
       cuid: 'mFHHRheGbRf8tFMGMSEy9dcQoF4nsZZ7',
-      token: '24.e3e5e7465bacc1df1c889cba70692b40.2592000.1578449123.282335-17972693',
+      token: '24.e3e5e7465bacc1df1c889cba70692b40.2592000.1578449123.282335-17972693', // 可以用到20号，以后再写获取token部分
     },
     data,
   };
   const response = await axios(requestConfig);
   if (response.data.err_no === 0) {
-    logger.debug(`Got response ${response.data.result[0]} at audioRes.js`);
     return Promise.resolve(response.data.result[0]);
   }
   logger.error(`Error Code: ${response.data.err_no}, Error Msg: ${response.data.err_msg}`);

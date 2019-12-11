@@ -1,7 +1,8 @@
 module.exports = {
   env: {
-    node : true,
+    commonjs: true,
     es6: true,
+    node: true,
   },
   extends: [
     'airbnb-base',
@@ -12,7 +13,6 @@ module.exports = {
   },
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module',
   },
   rules: {
     // 参考https://segmentfault.com/a/1190000008742240
