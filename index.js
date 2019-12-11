@@ -42,8 +42,14 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   const result = await audioRec(srcFilePath);
   logger.debug(`Got result: ${result}`);
   const clientStatus = clientManager.sendData(result)
-  if(clientStatus === StatusCode.SUCCESS) res.send('OK')
-  else res.send('failed')
+  if (clientStatus === StatusCode.SUCCESS) {
+    logger.debug('Successfully sent to PC client')
+    res.send('OK')
+  }
+  else {
+    logger.debug('PC client offline')
+    res.send('failed')
+  }
 });
 
 // websocket part
