@@ -7,7 +7,7 @@ class ClientManger {
         this.client = null // 暂时只支持一个client
 
         this.eventRegistration()
-    }
+    }   
 
     eventRegistration () {
         this.io.on('connection', (socket) => {
