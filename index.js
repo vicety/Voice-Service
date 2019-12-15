@@ -43,10 +43,10 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   logger.debug(`Got result: ${result}`);
   // TODO 客户端connect时额外发送报文告知自己身份，服务端在转发语音结果时可以根据身份转发
   let clientStatus;
-  if(result.includes('家具')) clientStatus = clientManager.sendData('iot', result)
-  else clientStatus = clientManager.sendData('video', result)
+  if(result.includes('家具')) clientStatus = clientManager.sendToIoT('iot', result)
+  else clientStatus = clientManager.sendToPC('video', result)
   if (clientStatus === StatusCode.SUCCESS) {
-    logger.debug('Successfully sent to PC client')
+    logger.debug('Successfully sent to client')
     res.send('OK')
   }
   else {

@@ -4,15 +4,20 @@ const StatusCode = require('./statusCode')
 class ClientManger {
     constructor(expressServer) {
         this.io = require('socket.io')(expressServer)
-        this.client = null // 暂时只支持一个client
+        this.pcClient = null // 暂时只支持一个client
+        this.iotClient = null
 
         this.eventRegistration()
     }   
 
     eventRegistration () {
         this.io.on('connection', (socket) => {
-            this.client = socket
             logger.debug(`client ${socket.id} connected`)
+
+            socket.on('register', (data) => {
+                if(data === 'iot') this.iotClient = socket
+                else if(data === 'pc') this.pcClient = socket;
+            })
 
             socket.on('disconnect', (reason) => {
                 this.client = null
@@ -25,9 +30,15 @@ class ClientManger {
         })
     }
 
-    sendData(event, data) {
+    sendToPC(event, data) {
         if(!this.client) return StatusCode.CLIENT_OFFLINE
-        this.client.emit(event, data)
+        this.pcClient.emit(event, data)
+        return StatusCode.SUCCESS
+    }
+
+    sendToIoT(event, data) {
+        if(!this.client) return StatusCode.CLIENT_OFFLINE
+        this.iotClient.emit(event, data)
         return StatusCode.SUCCESS
     }
 } 
