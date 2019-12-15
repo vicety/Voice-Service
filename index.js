@@ -35,6 +35,7 @@ app.get('/', (request, response) => {
 });
 
 app.post('/upload', upload.any(), async (req, res, next) => {
+  res.set('Content-Type', 'text/*') // otherwise text/html
   const srcFilePath = `uploads/${DEFAULT_FILE_NAME}`;
   // const tgtFilePath = `output/${DEFAULT_FILE_NAME}`;
   // await transcoding(srcFilePath, tgtFilePath);
