@@ -39,11 +39,11 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   // const tgtFilePath = `output/${DEFAULT_FILE_NAME}`;
   // await transcoding(srcFilePath, tgtFilePath);
   logger.debug('----- 发送语音听写请求 -----');
-  const result = await audioRec(srcFilePath).then(({data}) => {
+  await audioRec(srcFilePath).then(({data}) => {
     logger.debug(`Got Data: ${data}`)
     let clientStatus;
-    if (result.includes('家具')) clientStatus = clientManager.sendToIoT('iot', result)
-    else clientStatus = clientManager.sendToPC('video', result)
+    if (data.includes('家具')) clientStatus = clientManager.sendToIoT('iot', data)
+    else clientStatus = clientManager.sendToPC('video', data)
     if (clientStatus === StatusCode.SUCCESS) {
       logger.debug('Successfully sent to client')
       res.send('成功')
