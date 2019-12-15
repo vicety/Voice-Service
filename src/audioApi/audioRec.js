@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-const logger = require('./utils/logger');
+const logger = require('../utils/logger');
 
 module.exports = async (filePath) => {
   const data = fs.readFileSync(filePath);
@@ -17,8 +17,16 @@ module.exports = async (filePath) => {
   };
   const response = await axios(requestConfig);
   if (response.data.err_no === 0) {
-    return Promise.resolve(response.data.result[0]);
+    return Promise.resolve({
+      result : 'success',
+      code: 0,
+      data: response.data.result[0]
+    });
   }
   logger.error(`Error Code: ${response.data.err_no}, Error Msg: ${response.data.err_msg}`);
-  return Promise.resolve(null);
+  return Promise.reject({
+    result: 'fail',
+    code: response.data.err_no,
+    msg: response.data.err_msg
+  });
 };

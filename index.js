@@ -4,7 +4,8 @@ const logger = require('./src/utils/logger');
 // const transcoding = require('./src/transcoding');
 const ClientManger = require('./src/clientConnection/clientManager')
 const StatusCode = require('./src/clientConnection/statusCode')
-const audioRec = require('./src/audioRec');
+const audioRec = require('./src/audioApi/audioRec');
+const audioRecStatusCode = require('./src/audioApi/audioStatus');
 const requestBeginLogger = require('./src/middleware/loggingBeginMiddleware');
 const responseSentLogger = require('./src/middleware/loggingEndMiddleware');
 
@@ -20,7 +21,6 @@ const upload = multer({
 });
 const app = express();
 app.use(requestBeginLogger);
-// app.use(cors())
 app.use(responseSentLogger);
 
 const server = app.listen(PORT, () => {
@@ -39,20 +39,21 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   // const tgtFilePath = `output/${DEFAULT_FILE_NAME}`;
   // await transcoding(srcFilePath, tgtFilePath);
   logger.debug('----- 发送语音听写请求 -----');
-  const result = await audioRec(srcFilePath);
-  logger.debug(`Got result: ${result}`);
-  // TODO 客户端connect时额外发送报文告知自己身份，服务端在转发语音结果时可以根据身份转发
-  let clientStatus;
-  if(result.includes('家具')) clientStatus = clientManager.sendToIoT('iot', result)
-  else clientStatus = clientManager.sendToPC('video', result)
-  if (clientStatus === StatusCode.SUCCESS) {
-    logger.debug('Successfully sent to client')
-    res.send('OK')
-  }
-  else {
-    logger.debug('Client offline')
-    res.send('failed')
-  }
+  const result = await audioRec(srcFilePath).then(({data}) => {
+    let clientStatus;
+    if (result.includes('家具')) clientStatus = clientManager.sendToIoT('iot', result)
+    else clientStatus = clientManager.sendToPC('video', result)
+    if (clientStatus === StatusCode.SUCCESS) {
+      logger.debug('Successfully sent to client')
+      res.send('成功')
+    }
+    else {
+      logger.debug('Client offline')
+      res.send('客户端不在线，请检查客户端网络连接')
+    }
+  }).catch(data => {
+    res.send(audioRecStatusCode[data.code])
+  });
 });
 
 // websocket part
