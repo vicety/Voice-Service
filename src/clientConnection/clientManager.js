@@ -15,8 +15,15 @@ class ClientManger {
             logger.debug(`client ${socket.id} connected`)
 
             socket.on('register', (data) => {
-                if(data === 'iot') this.iotClient = socket
-                else if(data === 'pc') this.pcClient = socket;
+                if(data === 'iot') {
+                    this.iotClient = socket
+                    logger.debug('an iot device registered')
+                }
+
+                else if(data === 'pc') {
+                    this.pcClient = socket;
+                    logger.debug('a pc device registered')
+                }
             })
 
             socket.on('disconnect', (reason) => {

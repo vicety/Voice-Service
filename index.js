@@ -50,7 +50,7 @@ app.post('/upload', upload.any(), async (req, res, next) => {
     res.send('OK')
   }
   else {
-    logger.debug('PC client offline')
+    logger.debug('Client offline')
     res.send('failed')
   }
 });
