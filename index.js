@@ -42,8 +42,9 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   const result = await audioRec(srcFilePath);
   logger.debug(`Got result: ${result}`);
   // TODO 客户端connect时额外发送报文告知自己身份，服务端在转发语音结果时可以根据身份转发
-  if(result.contains('物联网')) const clientStatus = clientManager.sendData('iot', result)
-  else const clientStatus = clientManager.sendData('video', result)
+  let clientStatus;
+  if(result.contains('物联网')) clientStatus = clientManager.sendData('iot', result)
+  else clientStatus = clientManager.sendData('video', result)
   if (clientStatus === StatusCode.SUCCESS) {
     logger.debug('Successfully sent to PC client')
     res.send('OK')
