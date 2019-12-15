@@ -38,13 +38,13 @@ class ClientManger {
     }
 
     sendToPC(event, data) {
-        if(!this.client) return StatusCode.CLIENT_OFFLINE
+        if(!this.pcClient) return StatusCode.CLIENT_OFFLINE
         this.pcClient.emit(event, data)
         return StatusCode.SUCCESS
     }
 
     sendToIoT(event, data) {
-        if(!this.client) return StatusCode.CLIENT_OFFLINE
+        if(!this.iotClient) return StatusCode.CLIENT_OFFLINE
         this.iotClient.emit(event, data)
         return StatusCode.SUCCESS
     }
