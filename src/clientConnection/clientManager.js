@@ -25,9 +25,9 @@ class ClientManger {
         })
     }
 
-    sendData(data) {
+    sendData(event, data) {
         if(!this.client) return StatusCode.CLIENT_OFFLINE
-        this.client.emit('video', data)
+        this.client.emit(event, data)
         return StatusCode.SUCCESS
     }
 } 

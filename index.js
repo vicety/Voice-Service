@@ -41,7 +41,9 @@ app.post('/upload', upload.any(), async (req, res, next) => {
   logger.debug('----- 发送语音听写请求 -----');
   const result = await audioRec(srcFilePath);
   logger.debug(`Got result: ${result}`);
-  const clientStatus = clientManager.sendData(result)
+  // TODO 客户端connect时额外发送报文告知自己身份，服务端在转发语音结果时可以根据身份转发
+  if(result.contains('物联网')) const clientStatus = clientManager.sendData('iot', result)
+  else const clientStatus = clientManager.sendData('video', result)
   if (clientStatus === StatusCode.SUCCESS) {
     logger.debug('Successfully sent to PC client')
     res.send('OK')
