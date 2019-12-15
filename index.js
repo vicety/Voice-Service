@@ -49,9 +49,12 @@ app.post('/upload', upload.any(), async (req, res, next) => {
       logger.debug('Successfully sent to client')
       res.send('成功')
     }
-    else {
+    else if(clientStatus == StatusCode.PC_CLIENT_OFFLINE) {
+      logger.debug('PC Client offline')
+      res.send('电脑客户端不在线，请检查客户端网络连接')
+    } else {
       logger.debug('Client offline')
-      res.send('客户端不在线，请检查客户端网络连接')
+      res.send('物联网客户端不在线，请检查客户端网络连接')
     }
   }).catch(data => {
     res.send(audioRecStatusCode[data.code])
