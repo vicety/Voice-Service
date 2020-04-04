@@ -8,9 +8,14 @@ const audioRec = require('./src/audioApi/audioRec');
 const audioRecStatusCode = require('./src/audioApi/audioStatus');
 const requestBeginLogger = require('./src/middleware/loggingBeginMiddleware');
 const responseSentLogger = require('./src/middleware/loggingEndMiddleware');
+const axios = require('axios')
+const bodyParser = require('body-parser')
 
 const PORT = 80;
 const DEFAULT_FILE_NAME = 'lastUpload.aac';
+const PC_ORDER = "PC"
+const IOT_ORDER = "IOT"
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: 'uploads/',
@@ -22,6 +27,7 @@ const upload = multer({
 const app = express();
 app.use(requestBeginLogger);
 app.use(responseSentLogger);
+
 
 const server = app.listen(PORT, () => {
   console.log(`listening to port ${PORT}`);
@@ -38,10 +44,14 @@ app.get('/', (request, response) => {
 app.post('/upload', upload.any(), async (req, res, next) => {
   const srcFilePath = `uploads/${DEFAULT_FILE_NAME}`;
   logger.debug('----- 发送语音听写请求 -----');
-  await audioRec(srcFilePath).then(({ data }) => {
+  await audioRec(srcFilePath).then(async ({ data }) => {
     logger.debug(`Got Data: ${data}`)
     let clientStatus;
-    if (data.includes('家具')) clientStatus = clientManager.sendToIoT('iot', data)
+    let result = await axios.post('http://localhost:21112/predict_order', {
+      "word": data
+    })
+    logger.debug(`${data} is judge to ${result}`)
+    if (result == IOT_ORDER) clientStatus = clientManager.sendToIoT('iot', data)
     else clientStatus = clientManager.sendToPC('video', data)
     if (clientStatus === StatusCode.SUCCESS) {
       logger.debug('Successfully sent to client')
@@ -53,3 +63,16 @@ app.post('/upload', upload.any(), async (req, res, next) => {
     res.send(audioRecStatusCode[data.code])
   });
 });
+
+app.post('/most_similar', bodyParser.json(), async function (req, res, next) {
+  // logger.debug(req.body.pattern[0])
+  
+  axios.post('http://localhost:21112/predict_order', {
+    "word": req.body.word,
+    "pattern": req.body.pattern
+  }).then(result => {
+    logger.debug(result.data)
+    res.send(result.data)
+  })
+  
+})
