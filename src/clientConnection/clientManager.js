@@ -8,19 +8,19 @@ class ClientManger {
         this.iotClient = null
 
         this.eventRegistration()
-    }   
+    }
 
     eventRegistration () {
         this.io.on('connection', (socket) => {
             logger.debug(`client ${socket.id} connected`)
 
             socket.on('register', (data) => {
-                if(data === 'iot') {
+                if (data === 'iot') {
                     this.iotClient = socket
                     logger.debug('an iot device registered')
                 }
 
-                else if(data === 'pc') {
+                else if (data === 'pc') {
                     this.pcClient = socket;
                     logger.debug('a pc device registered')
                 }
@@ -37,17 +37,23 @@ class ClientManger {
         })
     }
 
-    sendToPC(event, data) {
-        if(!this.pcClient) return StatusCode.PC_CLIENT_OFFLINE
+    sendToPC (event, data) {
+        if (!this.pcClient) {
+            logger.warn('PC Client offline')
+            return StatusCode.PC_CLIENT_OFFLINE
+        }
         this.pcClient.emit(event, data)
         return StatusCode.SUCCESS
     }
 
-    sendToIoT(event, data) {
-        if(!this.iotClient) return StatusCode.IOT_CLIENT_OFFLINE
+    sendToIoT (event, data) {
+        if (!this.iotClient) {
+            logger.warn('IoT Client offline')
+            return StatusCode.IOT_CLIENT_OFFLINE
+        }
         this.iotClient.emit(event, data)
         return StatusCode.SUCCESS
     }
-} 
+}
 
 module.exports = ClientManger

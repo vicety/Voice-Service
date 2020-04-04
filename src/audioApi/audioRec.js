@@ -11,11 +11,11 @@ module.exports = async (filePath) => {
     params: {
       dev_pid: 80001,
       cuid: 'mFHHRheGbRf8tFMGMSEy9dcQoF4nsZZ7',
-      token: '24.e3e5e7465bacc1df1c889cba70692b40.2592000.1578449123.282335-17972693', // 可以用到20号，以后再写获取token部分
+      token: '24.049dacdd766ff60c1cdfae80eb7e384b.2592000.1588560068.282335-17972693', // 可以用到20号，以后再写获取token部分
     },
     data,
   };
-  const response = await axios(requestConfig);
+  const response = await axios(requestConfig); // 改成then的形式
   if (response.data.err_no === 0) {
     return Promise.resolve({
       result : 'success',

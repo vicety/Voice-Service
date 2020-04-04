@@ -34,13 +34,11 @@ app.get('/', (request, response) => {
   response.send('Test OK');
 });
 
+// TODO，在客户端添加图标用于表示两个客户端的在线状况（这样快应用也得加SocketIO，也不知道支不支持
 app.post('/upload', upload.any(), async (req, res, next) => {
-  // res.set('Content-Type', 'text/*') // otherwise text/html
   const srcFilePath = `uploads/${DEFAULT_FILE_NAME}`;
-  // const tgtFilePath = `output/${DEFAULT_FILE_NAME}`;
-  // await transcoding(srcFilePath, tgtFilePath);
   logger.debug('----- 发送语音听写请求 -----');
-  await audioRec(srcFilePath).then(({data}) => {
+  await audioRec(srcFilePath).then(({ data }) => {
     logger.debug(`Got Data: ${data}`)
     let clientStatus;
     if (data.includes('家具')) clientStatus = clientManager.sendToIoT('iot', data)
@@ -49,33 +47,9 @@ app.post('/upload', upload.any(), async (req, res, next) => {
       logger.debug('Successfully sent to client')
       res.send('成功')
     }
-    else if(clientStatus == StatusCode.PC_CLIENT_OFFLINE) {
-      logger.debug('PC Client offline')
-      res.send('电脑客户端不在线，请检查客户端网络连接')
-    } else {
-      logger.debug('Client offline')
-      res.send('物联网客户端不在线，请检查客户端网络连接')
-    }
+    else if (clientStatus == StatusCode.PC_CLIENT_OFFLINE) res.send('电脑客户端不在线，请检查客户端网络连接')  // 用户可能想对IOT说，但是返回电脑？  // 如果只是说不在线，用户没法知道是谁不在线
+    else res.send('物联网客户端不在线，请检查客户端网络连接')
   }).catch(data => {
     res.send(audioRecStatusCode[data.code])
   });
 });
-
-// websocket part
-// const io = require('socket.io')(30000);
-// const ioServer = require('http').Server(app)
-
-// const io = require('socket.io')(server)
-// io.on('connect', (socket) => {
-//   console.log('connected')
-//   socket.on('connection', () => console.log('socket connect'))
-//   socket.on('disconnect', (reason) => {
-//     console.log(`socket disconnect, reason: ${reason}`)
-//   })
-//   setInterval(() => {
-//     socket.emit('server_send', `server_send at: ${(new Date()).toUTCString()}`)
-//   }, 2000)
-//   socket.on('client_send', (data) => { logger.debug(`rcvd from client: ${data}`) })
-// })
-
-// TODO: 改成原来的io形式
