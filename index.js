@@ -10,6 +10,7 @@ const requestBeginLogger = require('./src/middleware/loggingBeginMiddleware');
 const responseSentLogger = require('./src/middleware/loggingEndMiddleware');
 const axios = require('axios')
 const bodyParser = require('body-parser')
+const cors = require('cors');
 
 const PORT = 80;
 const DEFAULT_FILE_NAME = 'lastUpload.aac';
@@ -27,6 +28,7 @@ const upload = multer({
 const app = express();
 app.use(requestBeginLogger);
 app.use(responseSentLogger);
+app.use(cors());
 
 
 const server = app.listen(PORT, () => {
