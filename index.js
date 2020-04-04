@@ -50,6 +50,7 @@ app.post('/upload', upload.any(), async (req, res, next) => {
     let result = await axios.post('http://localhost:21112/predict_order', {
       "word": data
     })
+    result = result.data;
     logger.debug(`${data} is judge to ${result}`)
     if (result == IOT_ORDER) clientStatus = clientManager.sendToIoT('iot', data)
     else clientStatus = clientManager.sendToPC('video', data)
