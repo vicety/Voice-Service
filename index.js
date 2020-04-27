@@ -53,9 +53,10 @@ app.post('/upload', upload.any(), async (req, res, next) => {
       "word": data
     })
     result = result.data.data;
-    logger.debug(`${data} is judge to ${result}`)
+    logger.debug(`${data} 被判定发往 ${result}`)
     if (result == IOT_ORDER) clientStatus = clientManager.sendToIoT('iot', data)
     else clientStatus = clientManager.sendToPC('video', data)
+    logger.debug(`返回状态码${clientStatus}`)
     if (clientStatus === StatusCode.SUCCESS) {
       logger.debug('Successfully sent to client')
       res.send('成功')
