@@ -105,7 +105,7 @@ app.get('/record_location', bodyParser.json(), async function (req, res, next) {
   var addSql = 'INSERT INTO location_record(longitude, latitude, old_id) VALUES(?, ?, ?)';
   var addSqlParams = [longitude, latitude, 1];
   //增
-  connection.query(addSql, addSqlParams, function (err, result) {
+  await connection.query(addSql, addSqlParams, function (err, result) {
     if (err) {
       logger.debug('[INSERT ERROR] - ', err.message);
       return;
