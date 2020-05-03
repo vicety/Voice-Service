@@ -93,8 +93,8 @@ app.post('/record_location', bodyParser.json(), async function (req, res, next) 
 
   logger.debug(`In Record_Location, req is: ${req}`)
 
-  const longitude = req.query.data.longitude
-  const latitude = req.query.data.latitude
+  const longitude = req.body.data.longitude
+  const latitude = req.body.data.latitude
   
   logger.debug(`longitude: ${longitude} latitude: ${latitude}`)
 
@@ -116,6 +116,7 @@ app.post('/record_location', bodyParser.json(), async function (req, res, next) 
   });
 
   connection.end();
+  res.send('Test OK');
 })
 
 // connection.connect();
