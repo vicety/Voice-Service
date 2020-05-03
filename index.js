@@ -79,3 +79,15 @@ app.post('/most_similar', bodyParser.json(), async function (req, res, next) {
   })
   
 })
+
+app.post('/record_location', bodyParser.json(), async function (req, res, next) {
+  logger.debug(`收到record_location, 为${req.body.word}, pattern为${req.body.pattern}`);
+  await axios.post('http://localhost:21112/most_similar', {
+    "word": req.body.word,
+    "pattern": req.body.pattern
+  }).then(result => {
+    logger.debug(result.data)
+    res.send(result.data)
+  })
+  
+})

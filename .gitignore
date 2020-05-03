@@ -106,4 +106,4 @@ dist
 # project specific
 *.aac
 *.wav
-test.js
+# test.js
