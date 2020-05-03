@@ -3,15 +3,15 @@ var mysql  = require('mysql');
 var connection = mysql.createConnection({     
   host     : 'localhost',       
   user     : 'root',              
-  password : '123456',       
+  password : 'PA19981031',       
   port: '3306',                   
-  database: 'test' 
+  database: 'znzl' 
 }); 
  
 connection.connect();
  
-var  addSql = 'INSERT INTO websites(Id,name,url,alexa,country) VALUES(0,?,?,?,?)';
-var  addSqlParams = ['菜鸟工具', 'https://c.runoob.com','23453', 'CN'];
+var  addSql = 'INSERT INTO location_record(longitude, latitule) VALUES(?, ?)';
+var  addSqlParams = ['12.234', '23.456'];
 //增
 connection.query(addSql,addSqlParams,function (err, result) {
         if(err){
