@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
  
 connection.connect();
  
-var  addSql = 'INSERT INTO location_record(longitude, latitule) VALUES(?, ?)';
+var  addSql = 'INSERT INTO location_record(longitude, latitude) VALUES(?, ?)';
 var  addSqlParams = ['12.234', '23.456'];
 //增
 connection.query(addSql,addSqlParams,function (err, result) {
