@@ -91,7 +91,7 @@ app.post('/most_similar', bodyParser.json(), async function (req, res, next) {
 
 app.get('/record_location', bodyParser.json(), async function (req, res, next) {
 
-  logger.debug(`In Record_Location, req is: ${req}`)
+  console.log(req)
 
   const longitude = req.body.data.longitude
   const latitude = req.body.data.latitude
