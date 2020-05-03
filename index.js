@@ -11,6 +11,15 @@ const responseSentLogger = require('./src/middleware/loggingEndMiddleware');
 const axios = require('axios')
 const bodyParser = require('body-parser')
 const cors = require('cors');
+const mysql = require('mysql');
+
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'PA19981031',
+  port: '3306',
+  database: 'znzl'
+});
 
 const PORT = 80;
 const DEFAULT_FILE_NAME = 'lastUpload.aac';
@@ -77,17 +86,50 @@ app.post('/most_similar', bodyParser.json(), async function (req, res, next) {
     logger.debug(result.data)
     res.send(result.data)
   })
-  
+
 })
 
 app.post('/record_location', bodyParser.json(), async function (req, res, next) {
-  logger.debug(`收到record_location, 为${req.body.word}, pattern为${req.body.pattern}`);
-  await axios.post('http://localhost:21112/most_similar', {
-    "word": req.body.word,
-    "pattern": req.body.pattern
-  }).then(result => {
-    logger.debug(result.data)
-    res.send(result.data)
-  })
+
+  const longitude = req.query.data.longitude
+  const latitude = req.query.data.latitude
   
+  connection.connect();
+
+  var addSql = 'INSERT INTO location_record(longitude, latitude) VALUES(?, ?)';
+  var addSqlParams = [longitude, latitude];
+  //增
+  connection.query(addSql, addSqlParams, function (err, result) {
+    if (err) {
+      console.log('[INSERT ERROR] - ', err.message);
+      return;
+    }
+
+    console.log('--------------------------INSERT----------------------------');
+    //console.log('INSERT ID:',result.insertId);        
+    console.log('INSERT ID:', result);
+    console.log('-----------------------------------------------------------------\n\n');
+  });
+
+  connection.end();
 })
+
+// connection.connect();
+
+// var  addSql = 'INSERT INTO location_record(longitude, latitude) VALUES(?, ?)';
+// var  addSqlParams = ['12.234', '23.456'];
+// //增
+// connection.query(addSql,addSqlParams,function (err, result) {
+//         if(err){
+//          console.log('[INSERT ERROR] - ',err.message);
+//          return;
+//         }        
+
+//        console.log('--------------------------INSERT----------------------------');
+//        //console.log('INSERT ID:',result.insertId);        
+//        console.log('INSERT ID:',result);        
+//        console.log('-----------------------------------------------------------------\n\n');  
+// });
+
+// connection.end();
+

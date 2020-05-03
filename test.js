@@ -26,3 +26,8 @@ connection.query(addSql,addSqlParams,function (err, result) {
 });
  
 connection.end();
+
+var cryptoJs = require('crypto-js')
+var hash = cryptoJs.SHA256("123456").toString(cryptoJs.enc.Hex);
+// sha = cryptoJs.enc.Base64.stringify(sha);
+console.log(hash)
