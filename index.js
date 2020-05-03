@@ -94,6 +94,8 @@ app.post('/record_location', bodyParser.json(), async function (req, res, next) 
   const longitude = req.query.data.longitude
   const latitude = req.query.data.latitude
   
+  logger.debug(`longitude: ${longitude} latitude: ${latitude}`)
+
   connection.connect();
 
   var addSql = 'INSERT INTO location_record(longitude, latitude) VALUES(?, ?)';
@@ -101,14 +103,14 @@ app.post('/record_location', bodyParser.json(), async function (req, res, next) 
   //增
   connection.query(addSql, addSqlParams, function (err, result) {
     if (err) {
-      console.log('[INSERT ERROR] - ', err.message);
+      logger.debug('[INSERT ERROR] - ', err.message);
       return;
     }
 
-    console.log('--------------------------INSERT----------------------------');
+    logger.debug('--------------------------INSERT----------------------------');
     //console.log('INSERT ID:',result.insertId);        
-    console.log('INSERT ID:', result);
-    console.log('-----------------------------------------------------------------\n\n');
+    logger.debug('INSERT ID:', result);
+    logger.debug('-----------------------------------------------------------------\n\n');
   });
 
   connection.end();
