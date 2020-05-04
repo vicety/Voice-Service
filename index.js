@@ -21,6 +21,8 @@ var connection = mysql.createConnection({
   database: 'znzl'
 });
 
+connection.connect();
+
 const PORT = 80;
 const DEFAULT_FILE_NAME = 'lastUpload.aac';
 const PC_ORDER = "PC"
@@ -100,7 +102,7 @@ app.get('/record_location', bodyParser.json(), async function (req, res, next) {
   
   logger.debug(`longitude: ${longitude} latitude: ${latitude}`)
 
-  connection.connect();
+ 
 
   var addSql = 'INSERT INTO location_record(longitude, latitude, old_id) VALUES(?, ?, ?)';
   var addSqlParams = [longitude, latitude, 1];
@@ -117,7 +119,7 @@ app.get('/record_location', bodyParser.json(), async function (req, res, next) {
     logger.debug('-----------------------------------------------------------------\n\n');
   });
 
-  connection.end();
+  
   res.send('Test OK');
 })
 
