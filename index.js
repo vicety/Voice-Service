@@ -65,7 +65,7 @@ app.post('/upload', upload.any(), async (req, res, next) => {
     })
     result = result.data.data;
     logger.debug(`${data} 被判定发往 ${result}`)
-    if(data.contains("看")) clientStatus = clientManager.sendToPC('video', data)
+    if(data.includes("看")) clientStatus = clientManager.sendToPC('video', data)
     else if (result == IOT_ORDER) clientStatus = clientManager.sendToIoT('iot', data)
     else clientStatus = clientManager.sendToPC('video', data)
     logger.debug(`返回状态码${clientStatus}`)
